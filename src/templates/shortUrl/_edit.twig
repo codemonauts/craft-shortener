@@ -1,0 +1,78 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+    <div class="btngroup">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
+
+        <div class="btn submit menubtn"></div>
+        <div class="menu">
+            <ul>
+                <li><a class="formsubmit"
+                       data-redirect="{{ continueEditingUrl|hash }}">
+                        {{ forms.optionShortcutLabel('S') }}
+                        {{ "Save and continue editing"|t('app') }}
+                    </a></li>
+            </ul>
+            {% if not isNew %}
+                <hr>
+                <ul>
+                    <li><a class="formsubmit error"
+                           data-action="shortener/short-url/delete"
+                           data-confirm="{{ 'Are you sure you want to delete this short URL?'|t('shortener') }}"
+                           data-redirect="{{ 'shortener/short-urls'|hash }}">{{ 'Delete'|t('shortener') }}</a>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{ actionInput('shortener/short-url/save') }}
+    {{ redirectInput('shortener/short-urls') }}
+
+    {% if shortUrl.id %}{{ hiddenInput('shortId', shortUrl.id) }}{% endif %}
+
+    <div id="fields">
+        {% if shortUrl.id %}
+        {{ forms.textField({
+            label: "Code",
+            id: 'code',
+            name: 'code',
+            value: shortUrl.code,
+            errors: shortUrl.getErrors('code'),
+            required: false,
+            first: true,
+            autofocus: false,
+            disabled: true,
+        }) }}
+        {% endif %}
+
+        {{ forms.textField({
+            label: "Destination",
+            id: 'destination',
+            name: 'destination',
+            value: shortUrl.destination,
+            errors: shortUrl.getErrors('destination'),
+            required: true,
+            first: true,
+            autofocus: false,
+            enabled: false,
+        }) }}
+
+        {{ forms.selectField({
+            label: "Redirect HTTP status",
+            id: 'redirectCode',
+            name: 'redirectCode',
+            options: [
+                { label: '301 Permanent', value: 301 },
+                { label: '302 Temporary', value: 302 },
+            ],
+            value: shortUrl.redirectCode,
+            errors: shortUrl.getErrors('redirectCode'),
+            required: true
+        }) }}
+    </div>
+{% endblock %}

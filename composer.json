@@ -1,0 +1,43 @@
+{
+  "name": "codemonauts/craft-shortener",
+  "description": "A URL shortener for Craft CMS.",
+  "version": "1.0.0",
+  "type": "craft-plugin",
+  "keywords": [
+    "craft",
+    "cms",
+    "craftcms",
+    "craft-plugin",
+    "shortener",
+    "link",
+    "qrcode"
+  ],
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "codemonauts",
+      "homepage": "https://codemonauts.com"
+    }
+  ],
+  "support": {
+    "source": "https://github.com/codemonauts/craft-shortener",
+    "docs": "https://github.com/codemonauts/craft-shortener/blob/master/README.md",
+    "issues": "https://github.com/codemonauts/craft-shortener/issues"
+  },
+  "require": {
+    "craftcms/cms": "^3.4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "codemonauts\\shortener\\": "src/"
+    }
+  },
+  "extra": {
+    "handle": "shortener",
+    "class": "codemonauts\\shortener\\Shortener",
+    "name": "Link shortener",
+    "description": "A link shortener for Craft CMS.",
+    "changelogUrl": "https://github.com/codemonauts/craft-shortener/blob/master/CHANGELOG.md",
+    "documentationUrl": "https://github.com/codemonauts/craft-shortener/blob/master/README.md"
+  }
+}

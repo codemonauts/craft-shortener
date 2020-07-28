@@ -1,0 +1,9 @@
+{% extends "_layouts/elementindex" %}
+{% set title = "Short URLs" %}
+{% set elementType = 'codemonauts\\shortener\\elements\\ShortUrl' %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <a href="{{ url('shortener/short-url/new') }}" class="btn submit add icon">Add Short URL</a>
+    </div>
+{% endblock %}
