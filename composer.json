@@ -1,6 +1,6 @@
 {
   "name": "codemonauts/craft-shortener",
-  "description": "A URL shortener for Craft CMS.",
+  "description": "A URL Shortener for Craft CMS.",
   "version": "1.0.0",
   "type": "craft-plugin",
   "keywords": [
@@ -35,8 +35,8 @@
   "extra": {
     "handle": "shortener",
     "class": "codemonauts\\shortener\\Shortener",
-    "name": "Link shortener",
-    "description": "A link shortener for Craft CMS.",
+    "name": "URL Shortener",
+    "description": "A URL Shortener for Craft CMS.",
     "changelogUrl": "https://github.com/codemonauts/craft-shortener/blob/master/CHANGELOG.md",
     "documentationUrl": "https://github.com/codemonauts/craft-shortener/blob/master/README.md"
   }

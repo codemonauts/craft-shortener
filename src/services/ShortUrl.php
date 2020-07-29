@@ -3,7 +3,12 @@
 namespace codemonauts\shortener\services;
 
 use codemonauts\shortener\elements\ShortUrl as ShortUrlElement;
+use codemonauts\shortener\elements\Template;
+use Craft;
 use craft\base\Component;
+use craft\elements\Entry;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
 
 /**
  * Class ShortUrl
@@ -14,7 +19,7 @@ class ShortUrl extends Component
     {
         do {
             $code = $this->_generateCode();
-        } while(ShortUrlElement::find()->code($code)->exists());
+        } while (ShortUrlElement::find()->code($code)->exists());
 
         return $code;
     }
@@ -47,4 +52,29 @@ class ShortUrl extends Component
         return $code;
     }
 
+    public function createFromTemplate(Entry $entry, Template $template)
+    {
+        $view = \Craft::$app->getView();
+        try {
+            $destination = $view->renderString($template->pattern, [
+                'entry' => $entry,
+            ]);
+        } catch (SyntaxError $e) {
+            throw new Exception('Syntax error in template pattern.');
+        }
+
+        $shortUrl = new ShortUrlElement();
+        $shortUrl->templateId = $template->id;
+        $shortUrl->elementId = $entry->id;
+        $shortUrl->redirectCode = $template->redirectCode;
+        $shortUrl->destination = $destination;
+        $shortUrl->code = $this->generateUniqueCode();
+
+        if (!Craft::$app->elements->saveElement($shortUrl)) {
+            $errors = $shortUrl->getFirstErrors();
+            throw new Exception(array_shift($errors));
+        }
+
+        return true;
+    }
 }

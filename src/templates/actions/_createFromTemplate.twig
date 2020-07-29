@@ -1,0 +1,8 @@
+<div class="btn menubtn" role="button">Create Short URL</div>
+<div class="menu">
+    <ul>
+        {% for template in templates %}
+            <li><a class="formsubmit" data-param="templateId" data-value="{{ template.id }}">{{ template.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>

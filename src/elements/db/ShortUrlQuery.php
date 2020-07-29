@@ -3,7 +3,9 @@
 namespace codemonauts\shortener\elements\db;
 
 use codemonauts\shortener\elements\ShortUrl;
+use codemonauts\shortener\elements\Template;
 use craft\elements\db\ElementQuery;
+use craft\elements\Entry;
 use craft\helpers\Db;
 use yii\db\Connection;
 
@@ -18,6 +20,7 @@ class ShortUrlQuery extends ElementQuery
 {
     public $code;
     public $templateId;
+    public $elementId;
     public $redirectCode;
 
     /**
@@ -49,6 +52,18 @@ class ShortUrlQuery extends ElementQuery
      *
      * @return static self reference
      */
+    public function elementId($value)
+    {
+        $this->elementId = (int)$value;
+
+        return $this;
+    }
+
+    /**
+     * @param int $value The property value
+     *
+     * @return static self reference
+     */
     public function redirectCode($value)
     {
         $this->redirectCode = (int)$value;
@@ -70,6 +85,7 @@ class ShortUrlQuery extends ElementQuery
             'shortener_shortUrls.destination',
             'shortener_shortUrls.redirectCode',
             'shortener_shortUrls.templateId',
+            'shortener_shortUrls.elementId',
         ]);
 
         if ($this->code) {
@@ -84,6 +100,15 @@ class ShortUrlQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam('shortener_shortUrls.templateId', $this->templateId));
         }
 
+        if ($this->elementId) {
+            $this->subQuery->andWhere(Db::parseParam('shortener_shortUrls.elementId', $this->elementId));
+        }
+
         return parent::beforePrepare();
+    }
+
+    public function createFromTemplate(Entry $entry, Template $template)
+    {
+
     }
 }

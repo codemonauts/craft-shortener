@@ -16,7 +16,7 @@ class ShortUrlController extends Controller
             return false;
         }
 
-        $this->requirePermission('shortManage');
+        $this->requirePermission('shortener:urls');
 
         return true;
     }
@@ -42,7 +42,7 @@ class ShortUrlController extends Controller
         }
 
         $variables['shortUrl'] = $shortUrl;
-        $variables['title'] = 'Edit short URL';
+        $variables['title'] = $shortUrl->id ? 'Edit Short URL' : 'Create Short URL';
         $variables['continueEditingUrl'] = 'shortener/short-url/{shortId}';
         $variables['isNew'] = !$shortUrl->id;
 
@@ -68,6 +68,7 @@ class ShortUrlController extends Controller
 
         if (Craft::$app->elements->saveElement($shortUrl)) {
             Craft::$app->session->setName('Short URL saved.');
+
             return $this->redirectToPostedUrl($shortUrl);
         }
 

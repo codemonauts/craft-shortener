@@ -15,6 +15,7 @@ use yii\db\ActiveQueryInterface;
  * @property string $destination The destination Url.
  * @property int $redirectCode The redirect HTTP status code to use.
  * @property int $templateId Template ID
+ * @property int $elementId Element ID
  * @property Element $element Element
  * @property Element $template Template
  */
@@ -40,12 +41,22 @@ class ShortUrl extends ActiveRecord
     }
 
     /**
-     * Returns the product related to this booking.
+     * Returns the template related to this Short URL.
      *
      * @return ActiveQueryInterface The relational query object.
      */
     public function getTemplate(): ActiveQueryInterface
     {
         return $this->hasOne(Entry::class, ['id' => 'templateId']);
+    }
+
+    /**
+     * Returns the element used to created this Short URL.
+     *
+     * @return ActiveQueryInterface The relational query object.
+     */
+    public function getReference(): ActiveQueryInterface
+    {
+        return $this->hasOne(Entry::class, ['id' => 'elementId']);
     }
 }

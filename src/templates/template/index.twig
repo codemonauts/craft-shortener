@@ -1,0 +1,10 @@
+{% extends "_layouts/elementindex" %}
+{% set title = "Templates" %}
+{% set elementType = 'codemonauts\\shortener\\elements\\Template' %}
+{% set selectedSubnavItem = 'shortTemplates' %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <a href="{{ url('shortener/template/new') }}" class="btn submit add icon">Add template</a>
+    </div>
+{% endblock %}
