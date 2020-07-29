@@ -54,7 +54,7 @@ class ShortUrl extends Component
 
     public function createFromTemplate(Entry $entry, Template $template)
     {
-        $view = \Craft::$app->getView();
+        $view = Craft::$app->getView();
         try {
             $destination = $view->renderString($template->pattern, [
                 'entry' => $entry,
@@ -76,5 +76,38 @@ class ShortUrl extends Component
         }
 
         return true;
+    }
+
+    public function update(ShortUrlElement $shortUrl)
+    {
+        $template = $shortUrl->getTemplate();
+        $entry = $shortUrl->getElement();
+
+        if (!$entry || !$template) {
+            return;
+        }
+
+        $view = Craft::$app->getView();
+        try {
+            $destination = $view->renderString($template->pattern, [
+                'entry' => $entry,
+            ]);
+        } catch (SyntaxError $e) {
+            throw new Exception('Syntax error in template pattern.');
+        }
+
+        $shortUrl->destination = $destination;
+
+        if (!Craft::$app->elements->saveElement($shortUrl)) {
+            $errors = $shortUrl->getFirstErrors();
+            throw new Exception(array_shift($errors));
+        }
+    }
+
+    public function exists(Entry $entry)
+    {
+        return ShortUrlElement::find()
+            ->elementId($entry->id)
+            ->exists();
     }
 }

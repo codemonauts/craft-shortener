@@ -3,17 +3,22 @@
 namespace codemonauts\shortener;
 
 use codemonauts\shortener\elements\actions\CreateFromTemplate;
+use codemonauts\shortener\elements\ShortUrl as ShortUrlElement;
+use codemonauts\shortener\elements\Template as TemplateElement;
 use codemonauts\shortener\services\ShortUrl;
 use codemonauts\shortener\services\Template;
 use Craft;
 use craft\base\Element;
 use \craft\base\Plugin;
 use craft\elements\Entry;
+use craft\events\ModelEvent;
 use craft\events\RegisterElementActionsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\helpers\ElementHelper;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
+use codemonauts\shortener\jobs\UpdateShortUrl;
 use yii\base\Event;
 
 
@@ -73,6 +78,37 @@ class Shortener extends Plugin
         // Register element actions
         Event::on(Entry::class, Element::EVENT_REGISTER_ACTIONS, function(RegisterElementActionsEvent $event) {
             $event->actions[] = CreateFromTemplate::class;
+        });
+
+        // Register event handler
+        Event::on(Entry::class, Entry::EVENT_AFTER_SAVE, function(ModelEvent $event) {
+            /**
+             * @var Entry $entry
+             */
+            $entry = $event->sender;
+
+            if (ElementHelper::isDraftOrRevision($entry)) {
+                return;
+            }
+
+            if (Shortener::getInstance()->shortUrl->exists($entry)) {
+                Craft::$app->queue->push(new UpdateShortUrl([
+                    'entryIds' => [$entry->id],
+                ]));
+            }
+        });
+
+        Event::on(TemplateElement::class, TemplateElement::EVENT_AFTER_SAVE, function(ModelEvent $event) {
+            /**
+             * @var TemplateElement $template
+             */
+            $template = $event->sender;
+
+            $entries = ShortUrlElement::find()->templateId($template->id)->ids();
+
+            Craft::$app->queue->push(new UpdateShortUrl([
+                'entryIds' => $entries,
+            ]));
         });
     }
 
