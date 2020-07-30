@@ -5,6 +5,7 @@ namespace codemonauts\shortener;
 use codemonauts\shortener\elements\actions\CreateFromTemplate;
 use codemonauts\shortener\elements\ShortUrl as ShortUrlElement;
 use codemonauts\shortener\elements\Template as TemplateElement;
+use codemonauts\shortener\models\Settings;
 use codemonauts\shortener\services\ShortUrl;
 use codemonauts\shortener\services\Template;
 use Craft;
@@ -16,6 +17,7 @@ use craft\events\RegisterElementActionsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\helpers\ElementHelper;
+use craft\helpers\UrlHelper;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
 use codemonauts\shortener\jobs\UpdateShortUrl;
@@ -49,6 +51,9 @@ class Shortener extends Plugin
     {
         parent::init();
 
+        // Get settings
+        $settings = $this->getSettings();
+
         // Register components
         $this->components = [
             'shortUrl' => ShortUrl::class,
@@ -73,6 +78,13 @@ class Shortener extends Plugin
             $event->rules['shortener/template/new'] = 'shortener/template/edit';
             $event->rules['shortener/template/<templateId:\d+>'] = 'shortener/template/edit';
             $event->rules['shortener/statistics'] = 'shortener/statistics/index';
+        });
+
+        // Register site routes
+        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_SITE_URL_RULES, function(RegisterUrlRulesEvent $event) use ($settings) {
+            if ($settings->domain !== '') {
+                $event->rules['//' . $settings->domain . '/<code:\w+>'] = 'shortener/redirect';
+            }
         });
 
         // Register element actions
@@ -110,6 +122,41 @@ class Shortener extends Plugin
                 'entryIds' => $entries,
             ]));
         });
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterInstall()
+    {
+        parent::afterInstall();
+
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return;
+        }
+
+        Craft::$app->getResponse()->redirect(
+            UrlHelper::cpUrl('settings/plugins/shortener')
+        )->send();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function createSettingsModel()
+    {
+        return new Settings();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function settingsHtml()
+    {
+        return Craft::$app->getView()->renderTemplate('shortener/settings', [
+                'settings' => $this->getSettings()
+            ]
+        );
     }
 
     /**

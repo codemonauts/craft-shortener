@@ -1,0 +1,13 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.autosuggestField({
+    label: "Domain",
+    instructions: "The domain name to listen for shorted requests.",
+    id: 'domain',
+    name: 'domain',
+    suggestEnvVars: true,
+    value: settings.domain,
+    errors: settings.getErrors('domain'),
+    required: true,
+    placeholder: "example.com"
+}) }}
