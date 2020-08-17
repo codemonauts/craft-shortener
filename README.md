@@ -1,8 +1,8 @@
-# A link shortener for Craft CMS
+# A URL Shortener for Craft CMS
 
 ![Icon](resources/shortener.png)
 
-A link shortener for Craft CMS.
+A URL Shortener for Craft CMS.
 
 ## Requirements
 

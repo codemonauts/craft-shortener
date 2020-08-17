@@ -7,7 +7,7 @@ use craft\base\Component;
 use craft\helpers\ArrayHelper;
 
 /**
- * Class ShortUrl
+ * Class Template
  */
 class Template extends Component
 {

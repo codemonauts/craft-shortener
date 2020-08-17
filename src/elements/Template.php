@@ -9,7 +9,7 @@ use craft\elements\db\ElementQueryInterface;
 use yii\base\Exception;
 
 /**
- * Class ShortUrl
+ * Class Template
  */
 class Template extends Element
 {
