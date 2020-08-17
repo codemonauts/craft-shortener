@@ -187,12 +187,14 @@ class Shortener extends Plugin
             ];
         }
 
+        /*
         if ($currentUser->can('shortener:statistics')) {
             $subNavs['shortStatistics'] = [
                 'url' => 'shortener/statistics',
                 'label' => 'Statistics',
             ];
         }
+        */
 
         $navItem['subnav'] = $subNavs;
 
