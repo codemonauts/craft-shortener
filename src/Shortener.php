@@ -22,6 +22,7 @@ use craft\services\UserPermissions;
 use craft\web\UrlManager;
 use codemonauts\shortener\jobs\UpdateShortUrl;
 use yii\base\Event;
+use yii\web\NotFoundHttpException;
 
 
 /**
@@ -54,6 +55,13 @@ class Shortener extends Plugin
         // Get settings
         $settings = $this->getSettings();
 
+        // Check for root path in domain
+        $domain = Craft::parseEnv($settings->domain);
+        $request = Craft::$app->getRequest();
+        if ($request->isSiteRequest && stripos($request->hostInfo, $domain) !== false && $request->getUrl() === '/') {
+            throw new NotFoundHttpException();
+        }
+
         // Register components
         $this->components = [
             'shortUrl' => ShortUrl::class,
@@ -84,6 +92,7 @@ class Shortener extends Plugin
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_SITE_URL_RULES, function(RegisterUrlRulesEvent $event) use ($settings) {
             if ($settings->domain !== '') {
                 $event->rules['//' . Craft::parseEnv($settings->domain) . '/<code:\w+>'] = 'shortener/redirect';
+                $event->rules['//' . Craft::parseEnv($settings->domain) . '<path:.*>'] = 'shortener/redirect/catch-all';
             }
         });
 
@@ -154,7 +163,7 @@ class Shortener extends Plugin
     protected function settingsHtml()
     {
         return Craft::$app->getView()->renderTemplate('shortener/settings', [
-                'settings' => $this->getSettings()
+                'settings' => $this->getSettings(),
             ]
         );
     }

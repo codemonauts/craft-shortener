@@ -24,4 +24,9 @@ class RedirectController extends Controller
 
         return $this->redirect($shortUrl->destination, $shortUrl->redirectCode);
     }
+
+    public function actionCatchAll(string $path)
+    {
+        throw new NotFoundHttpException();
+    }
 }
