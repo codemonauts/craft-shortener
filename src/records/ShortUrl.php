@@ -39,24 +39,4 @@ class ShortUrl extends ActiveRecord
     {
         return $this->hasOne(Element::class, ['id' => 'id']);
     }
-
-    /**
-     * Returns the template related to this Short URL.
-     *
-     * @return ActiveQueryInterface The relational query object.
-     */
-    public function getTemplate(): ActiveQueryInterface
-    {
-        return $this->hasOne(Entry::class, ['id' => 'templateId']);
-    }
-
-    /**
-     * Returns the element used to created this Short URL.
-     *
-     * @return ActiveQueryInterface The relational query object.
-     */
-    public function getReference(): ActiveQueryInterface
-    {
-        return $this->hasOne(Entry::class, ['id' => 'elementId']);
-    }
 }

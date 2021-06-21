@@ -56,7 +56,7 @@ class Shortener extends Plugin
         $settings = $this->getSettings();
 
         // Check for root path in domain
-        $domain = Craft::parseEnv($settings->domain);
+        $domain = trim(Craft::parseEnv($settings->domain), '/');
         $request = Craft::$app->getRequest();
         if ($request->isSiteRequest && stripos($request->hostInfo, $domain) !== false && $request->getUrl() === '/') {
             throw new NotFoundHttpException();
@@ -73,7 +73,6 @@ class Shortener extends Plugin
             $event->permissions['shortener'] = [
                 'shortener:urls' => ['label' => 'Manage Short Urls'],
                 'shortener:templates' => ['label' => 'Manage templates'],
-                'shortener:statistics' => ['label' => 'Show statistics'],
             ];
         });
 
@@ -85,14 +84,13 @@ class Shortener extends Plugin
             $event->rules['shortener/templates'] = 'shortener/template/index';
             $event->rules['shortener/template/new'] = 'shortener/template/edit';
             $event->rules['shortener/template/<templateId:\d+>'] = 'shortener/template/edit';
-            $event->rules['shortener/statistics'] = 'shortener/statistics/index';
         });
 
         // Register site routes
-        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_SITE_URL_RULES, function(RegisterUrlRulesEvent $event) use ($settings) {
+        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_SITE_URL_RULES, function(RegisterUrlRulesEvent $event) use ($settings, $domain) {
             if ($settings->domain !== '') {
-                $event->rules['//' . Craft::parseEnv($settings->domain) . '/<code:\w+>'] = 'shortener/redirect';
-                $event->rules['//' . Craft::parseEnv($settings->domain) . '<path:.*>'] = 'shortener/redirect/catch-all';
+                $event->rules['//' . $domain . '/<code:\w+>'] = 'shortener/redirect';
+                $event->rules['//' . $domain . '/<path:.*>'] = 'shortener/redirect/catch-all';
             }
         });
 
@@ -195,15 +193,6 @@ class Shortener extends Plugin
                 'label' => 'Templates',
             ];
         }
-
-        /*
-        if ($currentUser->can('shortener:statistics')) {
-            $subNavs['shortStatistics'] = [
-                'url' => 'shortener/statistics',
-                'label' => 'Statistics',
-            ];
-        }
-        */
 
         $navItem['subnav'] = $subNavs;
 
