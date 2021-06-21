@@ -9,6 +9,7 @@ use craft\base\Component;
 use craft\elements\Entry;
 use Twig\Error\SyntaxError;
 use yii\base\Exception;
+use yii\web\NotFoundHttpException;
 
 /**
  * Class ShortUrl
@@ -109,5 +110,20 @@ class ShortUrl extends Component
         return ShortUrlElement::find()
             ->elementId($entry->id)
             ->exists();
+    }
+
+    public function redirect($code)
+    {
+        $response = Craft::$app->getResponse();
+
+        $shortUrl = ShortUrl::find()
+            ->code($code)
+            ->one();
+
+        if (!$shortUrl) {
+            throw new NotFoundHttpException();
+        }
+
+        return $response->redirect($shortUrl->destination, $shortUrl->redirectCode);
     }
 }

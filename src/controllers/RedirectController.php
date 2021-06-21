@@ -2,9 +2,8 @@
 
 namespace codemonauts\shortener\controllers;
 
-use codemonauts\shortener\elements\ShortUrl;
+use codemonauts\shortener\Shortener;
 use craft\web\Controller;
-use yii\web\NotFoundHttpException;
 
 class RedirectController extends Controller
 {
@@ -14,19 +13,6 @@ class RedirectController extends Controller
 
     public function actionRedirect(string $code)
     {
-        $shortUrl = ShortUrl::find()
-            ->code($code)
-            ->one();
-
-        if (!$shortUrl) {
-            throw new NotFoundHttpException();
-        }
-
-        return $this->redirect($shortUrl->destination, $shortUrl->redirectCode);
-    }
-
-    public function actionCatchAll(string $path)
-    {
-        throw new NotFoundHttpException();
+        return Shortener::getInstance()->shortUrl->redirect($code);
     }
 }
