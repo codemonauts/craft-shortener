@@ -77,7 +77,7 @@ class ShortUrl extends Element
      */
     public function getCpEditUrl()
     {
-        return 'short-url/' . $this->id;
+        return 'shortener/short-url/' . $this->id;
     }
 
     /**
