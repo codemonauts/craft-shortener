@@ -123,7 +123,7 @@ class ShortUrl extends Component
     {
         $response = Craft::$app->getResponse();
 
-        $shortUrl = ShortUrl::find()
+        $shortUrl = ShortUrlElement::find()
             ->code($code)
             ->one();
 

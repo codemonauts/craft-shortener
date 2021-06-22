@@ -88,7 +88,7 @@ class Shortener extends Plugin
 
         // Register site routes
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_SITE_URL_RULES, function(RegisterUrlRulesEvent $event) use ($settings, $domain) {
-            if ($settings->domain !== '') {
+            if ($domain !== '') {
                 $event->rules[$domain . '/<code:\w+>'] = 'shortener/redirect';
                 $event->rules[$domain . '<path:.*>'] = 'shortener/redirect/catch-all';
             }
