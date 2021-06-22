@@ -18,6 +18,7 @@ class Settings extends Model
     {
         return [
             [['domain'], 'required'],
+            [['domain'], 'url'],
         ];
     }
 }

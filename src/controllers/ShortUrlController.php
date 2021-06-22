@@ -2,6 +2,8 @@
 
 namespace codemonauts\shortener\controllers;
 
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
 use codemonauts\shortener\elements\ShortUrl;
 use codemonauts\shortener\Shortener;
 use Craft;
@@ -39,6 +41,19 @@ class ShortUrlController extends Controller
             if ($shortUrl === null) {
                 $shortUrl = new ShortUrl();
             }
+        }
+
+        // Generate QR Code if not new
+        if ($shortUrl->id) {
+            $path = Craft::$app->path->getAssetSourcesPath();
+            $options = new QROptions([
+                'version'    => 5,
+                'outputType' => QRCode::OUTPUT_MARKUP_SVG,
+                'eccLevel'   => QRCode::ECC_L,
+            ]);
+
+            $qrcode = new QRCode($options);
+            $variables['qrcode'] = $qrcode->render($shortUrl->getUrl(), $path . DIRECTORY_SEPARATOR . $shortUrl->code . '.svg');
         }
 
         $variables['shortUrl'] = $shortUrl;

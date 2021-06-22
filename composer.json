@@ -1,7 +1,7 @@
 {
   "name": "codemonauts/craft-shortener",
   "description": "An URL Shortener for Craft CMS.",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "type": "craft-plugin",
   "keywords": [
     "craft",
@@ -25,7 +25,9 @@
     "issues": "https://github.com/codemonauts/craft-shortener/issues"
   },
   "require": {
-    "craftcms/cms": "^3.4.0"
+    "craftcms/cms": "^3.4.0",
+    "php": "^7.2",
+    "chillerlan/php-qrcode": "^3.3"
   },
   "autoload": {
     "psr-4": {

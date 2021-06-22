@@ -79,3 +79,11 @@
         }) }}
     </div>
 {% endblock %}
+
+{% block details %}
+    {%  if not isNew  and qrcode is defined %}
+    <div class="meta read-only">
+        <img src="{{ qrcode }}" alt="">
+    </div>
+    {% endif %}
+{% endblock %}

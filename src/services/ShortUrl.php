@@ -7,7 +7,9 @@ use codemonauts\shortener\elements\Template;
 use Craft;
 use craft\base\Component;
 use craft\elements\Entry;
+use shortener\events\HandleMissingShortUrl;
 use Twig\Error\SyntaxError;
+use yii\base\Event;
 use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 
@@ -16,6 +18,11 @@ use yii\web\NotFoundHttpException;
  */
 class ShortUrl extends Component
 {
+    /**
+     * @event HandleMissingShortUrl The event that is triggered when a short URL could not be found.
+     */
+    const EVENT_HANDLE_MISSING_SHORTURL = 'missingShortUrl';
+
     public function generateUniqueCode()
     {
         do {
@@ -121,9 +128,29 @@ class ShortUrl extends Component
             ->one();
 
         if (!$shortUrl) {
+
+            // Give plugins a chance to add their own handling
+            $event = new HandleMissingShortUrl();
+            Event::trigger(self::class, self::EVENT_HANDLE_MISSING_SHORTURL, $event);
+            if ($event->destination !== null) {
+                return $response->redirect($event->destination, $event->redirectCode);
+            }
+
             throw new NotFoundHttpException();
         }
 
         return $response->redirect($shortUrl->destination, $shortUrl->redirectCode);
+    }
+
+    public function handleCatchAll($path)
+    {
+        // Give plugins a chance to add their own handling
+        $event = new HandleMissingShortUrl();
+        Event::trigger(self::class, self::EVENT_HANDLE_MISSING_SHORTURL, $event);
+        if ($event->destination !== null) {
+            return Craft::$app->getResponse()->redirect($event->destination, $event->redirectCode);
+        }
+
+        throw new NotFoundHttpException();
     }
 }

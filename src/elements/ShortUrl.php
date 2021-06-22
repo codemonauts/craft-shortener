@@ -82,6 +82,19 @@ class ShortUrl extends Element
 
     /**
      * @inheritDoc
+     */
+    public function getUrl()
+    {
+        $settings = Shortener::getInstance()->getSettings();
+        if ($settings->domain === null || !$this->id) {
+            return null;
+        }
+
+        return trim($settings->domain, '/') . '/' . $this->code;
+    }
+
+    /**
+     * @inheritDoc
      * @return ShortUrlQuery
      */
     public static function find(): ElementQueryInterface

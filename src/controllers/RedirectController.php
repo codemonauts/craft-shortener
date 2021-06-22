@@ -15,4 +15,9 @@ class RedirectController extends Controller
     {
         return Shortener::getInstance()->shortUrl->redirect($code);
     }
+
+    public function actionCatchAll(string $path)
+    {
+        return Shortener::getInstance()->shortUrl->handleCatchAll($path);
+    }
 }
