@@ -66,9 +66,12 @@ class Template extends Element
         return true;
     }
 
-    public function getCpEditUrl()
+    /**
+     * @inheritdoc
+     */
+    public function getCpEditUrl(): string
     {
-        return 'template/' . $this->id;
+        return 'shortener/template/' . $this->id;
     }
 
     /**

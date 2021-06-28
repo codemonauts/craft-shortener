@@ -10,7 +10,7 @@ use codemonauts\shortener\services\ShortUrl;
 use codemonauts\shortener\services\Template;
 use Craft;
 use craft\base\Element;
-use \craft\base\Plugin;
+use craft\base\Plugin;
 use craft\elements\Entry;
 use craft\events\ModelEvent;
 use craft\events\RegisterElementActionsEvent;

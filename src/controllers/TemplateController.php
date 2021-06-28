@@ -66,7 +66,7 @@ class TemplateController extends Controller
         $template->redirectCode = $request->getBodyParam('redirectCode');
 
         if (Craft::$app->elements->saveElement($template)) {
-            Craft::$app->session->setName('Template saved.');
+            Craft::$app->session->setNotice('Template saved.');
 
             return $this->redirectToPostedUrl($template);
         }
