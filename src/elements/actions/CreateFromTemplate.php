@@ -27,10 +27,14 @@ class CreateFromTemplate extends ElementAction
      */
     public function getTriggerHtml(): ?string
     {
-        $templates = Template::find()->all();
+        $templates = Template::find();
+
+        if (!$templates->exists()) {
+            return null;
+        }
 
         return Craft::$app->getView()->renderTemplate('shortener/actions/_createFromTemplate', [
-            'templates' => $templates,
+            'templates' => $templates->all(),
         ]);
     }
 

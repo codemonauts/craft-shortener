@@ -96,7 +96,9 @@ class Shortener extends Plugin
 
         // Register element actions
         Event::on(Entry::class, Element::EVENT_REGISTER_ACTIONS, function(RegisterElementActionsEvent $event) {
-            $event->actions[] = CreateFromTemplate::class;
+            if (TemplateElement::find()->exists()) {
+                $event->actions[] = CreateFromTemplate::class;
+            }
         });
 
         // Register event handler
