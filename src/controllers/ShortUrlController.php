@@ -95,4 +95,29 @@ class ShortUrlController extends Controller
 
         return null;
     }
+
+    public function actionDelete()
+    {
+        $this->requirePostRequest();
+
+        $shortId = Craft::$app->getRequest()->getRequiredBodyParam('shortId');
+        $shortUrl = ShortUrl::findOne(['id' => $shortId]);
+        if ($shortUrl === null) {
+            throw new NotFoundHttpException('Short URL not found.');
+        }
+
+        if (!Craft::$app->getElements()->deleteElement($shortUrl)) {
+            Craft::$app->getSession()->setError('Couldn’t delete Short URL.');
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'shortUrl' => $shortUrl,
+            ]);
+
+            return null;
+        }
+
+        Craft::$app->getSession()->setNotice('Short URL deleted.');
+
+        return $this->redirectToPostedUrl($shortUrl);
+    }
 }

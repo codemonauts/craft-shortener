@@ -20,9 +20,9 @@
                 <hr>
                 <ul>
                     <li><a class="formsubmit error"
-                           data-action="shortener/short-url/delete"
-                           data-confirm="{{ 'Are you sure you want to delete this template?'|t('shortener') }}"
-                           data-redirect="{{ 'shortener/short-urls'|hash }}">{{ 'Delete'|t('app') }}</a>
+                           data-action="shortener/template/delete"
+                           data-confirm="{{ 'Are you sure you want to delete this template? All existing Short URLs based on this template will also be deleted!'|t('shortener') }}"
+                           data-redirect="{{ 'shortener/templates'|hash }}">{{ 'Delete'|t('app') }}</a>
                     </li>
                 </ul>
             {% endif %}

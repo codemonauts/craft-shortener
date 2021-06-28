@@ -2,6 +2,7 @@
 
 namespace codemonauts\shortener\controllers;
 
+use codemonauts\shortener\elements\ShortUrl;
 use codemonauts\shortener\elements\Template;
 use Craft;
 use craft\web\Controller;
@@ -78,5 +79,52 @@ class TemplateController extends Controller
         ]);
 
         return null;
+    }
+
+    public function actionDelete()
+    {
+        $this->requirePostRequest();
+
+        $templateId = Craft::$app->getRequest()->getRequiredBodyParam('templateId');
+        $template = Template::findOne(['id' => $templateId]);
+        if ($template === null) {
+            throw new NotFoundHttpException('Template not found.');
+        }
+
+        $transaction = Craft::$app->getDb()->getTransaction() ?? Craft::$app->getDb()->beginTransaction();
+
+        if (!Craft::$app->getElements()->deleteElement($template)) {
+            Craft::$app->getSession()->setError('Couldn’t delete template.');
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'template' => $template,
+            ]);
+
+            $transaction->rollBack();
+
+            return null;
+        }
+
+        $shortUrls = ShortUrl::findAll(['templateId' => $templateId]);
+
+        foreach ($shortUrls as $shortUrl) {
+            if (!Craft::$app->getElements()->deleteElement($shortUrl)) {
+                Craft::$app->getSession()->setError('Couldn’t delete template.');
+
+                Craft::$app->getUrlManager()->setRouteParams([
+                    'template' => $template,
+                ]);
+
+                $transaction->rollBack();
+
+                return null;
+            }
+        }
+
+        $transaction->commit();
+
+        Craft::$app->getSession()->setNotice('Template and all related Short URLs deleted.');
+
+        return $this->redirectToPostedUrl($template);
     }
 }
