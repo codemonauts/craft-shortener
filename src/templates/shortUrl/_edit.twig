@@ -77,6 +77,16 @@
             errors: shortUrl.getErrors('redirectCode'),
             required: true
         }) }}
+
+        {{ forms.textareaField({
+            label: "Description",
+            id: 'description',
+            name: 'description',
+            value: shortUrl.description,
+            errors: shortUrl.getErrors('description'),
+            instructions: 'A short description to remember the use case.',
+            required: false,
+        }) }}
     </div>
 {% endblock %}
 

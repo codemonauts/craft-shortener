@@ -1,7 +1,7 @@
 {
   "name": "codemonauts/craft-shortener",
   "description": "An URL Shortener for Craft CMS.",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "type": "craft-plugin",
   "keywords": [
     "craft",

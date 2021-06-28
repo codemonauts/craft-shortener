@@ -1,5 +1,17 @@
 # Release Notes for URL Shortener
 
+## 1.0.0-alpha-5
+
+### Added
+
+- Add a description field to Short URLs.
+- Add functions to delete templates and Short URLs.
+
+### Fixed
+
+- Fix notice when saving templates.
+- Show template actions only, when templates are available.
+
 ## 1.0.0-alpha.4
 
 ### Added

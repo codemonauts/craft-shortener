@@ -21,6 +21,7 @@ class ShortUrl extends Element
     public $code;
     public $destination;
     public $redirectCode;
+    public $description;
     public $templateId;
     public $elementId;
 
@@ -125,6 +126,7 @@ class ShortUrl extends Element
             'code' => 'Code',
             'destination' => 'Destination URL',
             'redirectCode' => 'Redirect HTTP status',
+            'description' => 'Description',
             'templateId' => 'Template',
             'elementId' => 'Referenced Elements',
         ];
@@ -164,6 +166,7 @@ class ShortUrl extends Element
             'code',
             'destination',
             'redirectCode',
+            'description',
             'templateId',
             'elementId',
         ];
@@ -233,6 +236,7 @@ class ShortUrl extends Element
         $record->code = $this->code;
         $record->destination = $this->destination;
         $record->redirectCode = $this->redirectCode;
+        $record->description = $this->description;
         $record->templateId = $this->templateId;
         $record->elementId = $this->elementId;
 

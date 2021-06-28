@@ -22,6 +22,7 @@ class ShortUrlQuery extends ElementQuery
     public $templateId;
     public $elementId;
     public $redirectCode;
+    public $description;
 
     /**
      * @param string $value The property value
@@ -84,6 +85,7 @@ class ShortUrlQuery extends ElementQuery
             'shortener_shortUrls.code',
             'shortener_shortUrls.destination',
             'shortener_shortUrls.redirectCode',
+            'shortener_shortUrls.description',
             'shortener_shortUrls.templateId',
             'shortener_shortUrls.elementId',
         ]);

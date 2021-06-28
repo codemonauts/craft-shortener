@@ -80,6 +80,7 @@ class ShortUrlController extends Controller
 
         $shortUrl->destination = $request->getBodyParam('destination');
         $shortUrl->redirectCode = $request->getBodyParam('redirectCode');
+        $shortUrl->description = $request->getBodyParam('description');
 
         if (Craft::$app->elements->saveElement($shortUrl)) {
             Craft::$app->session->setNotice('Short URL saved.');

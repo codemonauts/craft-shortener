@@ -43,7 +43,7 @@ class Shortener extends Plugin
     /**
      * @inheritDoc
      */
-    public $schemaVersion = '1.0';
+    public $schemaVersion = '1.1';
 
     /**
      * @inheritDoc

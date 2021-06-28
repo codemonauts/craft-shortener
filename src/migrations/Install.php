@@ -15,6 +15,7 @@ class Install extends Migration
             'code' => $this->string()->notNull(),
             'destination' => $this->string(1024)->notNull(),
             'redirectCode' => $this->integer()->unsigned()->notNull(),
+            'description' => $this->string(1024),
             'templateId' => $this->integer(),
             'elementId' => $this->integer(),
             'dateCreated' => $this->dateTime()->notNull(),

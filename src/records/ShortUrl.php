@@ -14,6 +14,7 @@ use yii\db\ActiveQueryInterface;
  * @property string $code The short code.
  * @property string $destination The destination Url.
  * @property int $redirectCode The redirect HTTP status code to use.
+ * @property string $description A description to remember the use case.
  * @property int $templateId Template ID
  * @property int $elementId Element ID
  * @property Element $element Element
