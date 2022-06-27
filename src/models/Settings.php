@@ -9,16 +9,20 @@ class Settings extends Model
     /**
      * @var string The domain to use.
      */
-    public $domain = '';
+    public string $domain = '';
+
+    /**
+     * @var bool Whether to activate the catch-all function..
+     */
+    public bool $catchall = true;
 
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['domain'], 'required'],
-            [['domain'], 'url'],
         ];
     }
 }

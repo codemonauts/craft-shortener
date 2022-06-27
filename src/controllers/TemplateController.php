@@ -7,6 +7,7 @@ use codemonauts\shortener\elements\Template;
 use Craft;
 use craft\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class TemplateController extends Controller
 {
@@ -21,7 +22,7 @@ class TemplateController extends Controller
         return true;
     }
 
-    public function actionIndex()
+    public function actionIndex(): Response
     {
         return $this->renderTemplate('shortener/template/index');
     }
@@ -49,7 +50,7 @@ class TemplateController extends Controller
         $this->renderTemplate('shortener/template/_edit', $variables);
     }
 
-    public function actionSave()
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
         $request = Craft::$app->getRequest();
@@ -81,7 +82,7 @@ class TemplateController extends Controller
         return null;
     }
 
-    public function actionDelete()
+    public function actionDelete(): ?Response
     {
         $this->requirePostRequest();
 

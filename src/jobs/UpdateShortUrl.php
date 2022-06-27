@@ -8,15 +8,15 @@ use craft\queue\BaseJob;
 
 class UpdateShortUrl extends BaseJob
 {
-    public $entryIds = [];
+    public array $entryIds = [];
 
-    public function execute($queue)
+    public function execute($queue): void
     {
         $shortener = Shortener::getInstance()->shortUrl;
         $total = count($this->entryIds);
         $counter = 0;
 
-        foreach ($this->entryIds as $entryId) {
+        foreach ($this->entryIds as $i => $entryId) {
             $counter++;
             $this->setProgress($queue, ($counter / $total), 'Step ' . $counter . ' of ' . $total);
 
@@ -28,8 +28,6 @@ class UpdateShortUrl extends BaseJob
                 $shortener->update($shortUrl);
             }
         }
-
-        return true;
     }
 
     protected function defaultDescription(): string

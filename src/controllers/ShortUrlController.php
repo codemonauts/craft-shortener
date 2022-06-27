@@ -9,6 +9,7 @@ use codemonauts\shortener\Shortener;
 use Craft;
 use craft\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class ShortUrlController extends Controller
 {
@@ -23,7 +24,7 @@ class ShortUrlController extends Controller
         return true;
     }
 
-    public function actionIndex()
+    public function actionIndex(): Response
     {
         return $this->renderTemplate('shortener/shortUrl/index');
     }
@@ -47,9 +48,9 @@ class ShortUrlController extends Controller
         if ($shortUrl->id) {
             $path = Craft::$app->path->getAssetSourcesPath();
             $options = new QROptions([
-                'version'    => 5,
+                'version' => 5,
                 'outputType' => QRCode::OUTPUT_MARKUP_SVG,
-                'eccLevel'   => QRCode::ECC_L,
+                'eccLevel' => QRCode::ECC_L,
             ]);
 
             $qrcode = new QRCode($options);
@@ -64,7 +65,7 @@ class ShortUrlController extends Controller
         $this->renderTemplate('shortener/shortUrl/_edit', $variables);
     }
 
-    public function actionSave()
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
         $request = Craft::$app->getRequest();
@@ -97,7 +98,7 @@ class ShortUrlController extends Controller
         return null;
     }
 
-    public function actionDelete()
+    public function actionDelete(): ?Response
     {
         $this->requirePostRequest();
 

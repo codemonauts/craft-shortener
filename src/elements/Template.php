@@ -13,10 +13,10 @@ use yii\base\Exception;
  */
 class Template extends Element
 {
-    public $title;
-    public $pattern;
-    public $description;
-    public $redirectCode;
+    public ?string $title = null;
+    public ?string $pattern = null;
+    public $description = null;
+    public int $redirectCode = 302;
 
     /**
      * @inheritDoc
@@ -56,14 +56,6 @@ class Template extends Element
     public static function pluralLowerDisplayName(): string
     {
         return 'templates';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getIsEditable(): bool
-    {
-        return true;
     }
 
     /**

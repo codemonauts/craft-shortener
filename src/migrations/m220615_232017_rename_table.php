@@ -5,11 +5,16 @@ namespace codemonauts\shortener\migrations;
 use craft\db\Migration;
 use craft\db\Table;
 
-class Install extends Migration
+/**
+ * m220615_232017_rename_table migration.
+ */
+class m220615_232017_rename_table extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function safeUp()
     {
-        $this->dropTableIfExists('{{%shortener_shortcodes}}');
         $this->createTable('{{%shortener_shortcodes}}', [
             'id' => $this->primaryKey(),
             'code' => $this->string()->notNull(),
@@ -25,24 +30,14 @@ class Install extends Migration
 
         $this->addForeignKey(null, '{{%shortener_shortcodes}}', ['id'], Table::ELEMENTS, ['id'], 'CASCADE', null);
 
-        $this->dropTableIfExists('{{%shortener_templates}}');
-        $this->createTable('{{%shortener_templates}}', [
-            'id' => $this->primaryKey(),
-            'title' => $this->string()->notNull(),
-            'pattern' => $this->string(1024)->notNull(),
-            'description' => $this->string(1024),
-            'redirectCode' => $this->integer()->unsigned()->notNull(),
-            'dateCreated' => $this->dateTime()->notNull(),
-            'dateUpdated' => $this->dateTime()->notNull(),
-            'uid' => $this->uid(),
-        ]);
-
-        $this->addForeignKey(null, '{{%shortener_templates}}', ['id'], Table::ELEMENTS, ['id'], 'CASCADE', null);
+        $this->db->createCommand('insert into shortener_shortcodes select * from shortener_shortUrls')->execute();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function safeDown()
     {
         $this->dropTableIfExists('{{%shortener_shortcodes}}');
-        $this->dropTableIfExists('{{%shortener_templates}}');
     }
 }

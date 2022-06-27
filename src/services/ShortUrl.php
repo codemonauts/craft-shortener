@@ -6,8 +6,9 @@ use codemonauts\shortener\elements\ShortUrl as ShortUrlElement;
 use codemonauts\shortener\elements\Template;
 use Craft;
 use craft\base\Component;
+use craft\base\ElementInterface;
 use craft\elements\Entry;
-use shortener\events\HandleMissingShortUrl;
+use codemonauts\shortener\events\HandleMissingShortUrl;
 use Twig\Error\SyntaxError;
 use yii\base\Event;
 use yii\base\Exception;
@@ -23,7 +24,7 @@ class ShortUrl extends Component
      */
     const EVENT_HANDLE_MISSING_SHORTURL = 'missingShortUrl';
 
-    public function generateUniqueCode()
+    public function generateUniqueCode(): string
     {
         do {
             $code = $this->_generateCode();
@@ -32,16 +33,16 @@ class ShortUrl extends Component
         return $code;
     }
 
-    private function _generateCode($length = 5, $available_sets = 'lud')
+    private function _generateCode($length = 5, $available_sets = 'lud'): string
     {
         $sets = [];
-        if (strpos($available_sets, 'l') !== false) {
+        if (str_contains($available_sets, 'l')) {
             $sets[] = 'abcdefghjkmnpqrstuvwxyz';
         }
-        if (strpos($available_sets, 'u') !== false) {
+        if (str_contains($available_sets, 'u')) {
             $sets[] = 'ABCDEFGHJKMNPQRSTUVWXYZ';
         }
-        if (strpos($available_sets, 'd') !== false) {
+        if (str_contains($available_sets, 'd')) {
             $sets[] = '23456789';
         }
         $all = '';
@@ -55,19 +56,17 @@ class ShortUrl extends Component
             $code .= $all[array_rand($all)];
         }
 
-        $code = str_shuffle($code);
-
-        return $code;
+        return str_shuffle($code);
     }
 
-    public function createFromTemplate(Entry $entry, Template $template)
+    public function createFromTemplate(ElementInterface $entry, Template $template): bool
     {
         $view = Craft::$app->getView();
         try {
             $destination = $view->renderString($template->pattern, [
                 'entry' => $entry,
             ]);
-        } catch (SyntaxError $e) {
+        } catch (SyntaxError) {
             throw new Exception('Syntax error in template pattern.');
         }
 

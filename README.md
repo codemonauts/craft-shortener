@@ -6,7 +6,7 @@ A URL Shortener for Craft CMS.
 
 ## Requirements
 
- * Craft CMS >= 3.4.0
+- Craft CMS >= 4.0.0
 
 ## Installation
 
@@ -15,8 +15,10 @@ Open your terminal and go to your Craft project:
 ``` shell
 cd /path/to/project
 composer require codemonauts/craft-shortener
-./craft install/plugin shortener
+./craft plugin/install shortener
 ```
+
+You can also install the plugin via the Plugin Store in the Craft Control Panel.
 
 ## Configuration
 

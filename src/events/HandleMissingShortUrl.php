@@ -1,6 +1,6 @@
 <?php
 
-namespace shortener\events;
+namespace codemonauts\shortener\events;
 
 use yii\base\Event;
 

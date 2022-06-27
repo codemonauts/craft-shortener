@@ -16,6 +16,7 @@ use craft\events\ModelEvent;
 use craft\events\RegisterElementActionsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\helpers\App;
 use craft\helpers\ElementHelper;
 use craft\helpers\UrlHelper;
 use craft\services\UserPermissions;
@@ -34,16 +35,29 @@ use yii\web\NotFoundHttpException;
 class Shortener extends Plugin
 {
     /**
-     * @inheritDoc
+     * @var Shortener|null
      */
-    public $hasCpSettings = true;
+    public static ?Shortener $plugin;
 
-    public $hasCpSection = true;
+    /**
+     * @var Settings|null
+     */
+    public static ?Settings $settings;
 
     /**
      * @inheritDoc
      */
-    public $schemaVersion = '1.1';
+    public bool $hasCpSettings = true;
+
+    /**
+     * @inheritDoc
+     */
+    public bool $hasCpSection = true;
+
+    /**
+     * @inheritDoc
+     */
+    public string $schemaVersion = '1.2';
 
     /**
      * @inheritDoc
@@ -52,11 +66,12 @@ class Shortener extends Plugin
     {
         parent::init();
 
-        // Get settings
-        $settings = $this->getSettings();
+        self::$plugin = $this;
+
+        self::$settings = self::$plugin->getSettings();
 
         // Check for root path in domain
-        $domain = trim(Craft::parseEnv($settings->domain), '/');
+        $domain = rtrim(App::parseEnv(self::$settings->domain), '/');
         $request = Craft::$app->getRequest();
         if ($request->isSiteRequest && stripos($request->hostInfo, $domain) !== false && $request->getUrl() === '/') {
             throw new NotFoundHttpException();
@@ -70,9 +85,12 @@ class Shortener extends Plugin
 
         // Register permissions
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
-            $event->permissions['shortener'] = [
-                'shortener:urls' => ['label' => 'Manage Short Urls'],
-                'shortener:templates' => ['label' => 'Manage templates'],
+            $event->permissions[] = [
+                'heading' => 'URL Shortener',
+                'permissions' => [
+                    'shortener:urls' => ['label' => 'Manage Short Urls'],
+                    'shortener:templates' => ['label' => 'Manage templates'],
+                ]
             ];
         });
 
@@ -87,10 +105,12 @@ class Shortener extends Plugin
         });
 
         // Register site routes
-        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_SITE_URL_RULES, function(RegisterUrlRulesEvent $event) use ($settings, $domain) {
+        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_SITE_URL_RULES, function(RegisterUrlRulesEvent $event) use ($domain) {
             if ($domain !== '') {
                 $event->rules[$domain . '/<code:\w+>'] = 'shortener/redirect';
-                $event->rules[$domain . '<path:.*>'] = 'shortener/redirect/catch-all';
+                if (self::$settings->catchall) {
+                    $event->rules[$domain . '<path:.*>'] = 'shortener/redirect/catch-all';
+                }
             }
         });
 
@@ -136,7 +156,7 @@ class Shortener extends Plugin
     /**
      * @inheritDoc
      */
-    public function afterInstall()
+    public function afterInstall(): void
     {
         parent::afterInstall();
 
@@ -152,7 +172,7 @@ class Shortener extends Plugin
     /**
      * @inheritDoc
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): Settings
     {
         return new Settings();
     }
@@ -160,7 +180,7 @@ class Shortener extends Plugin
     /**
      * @inheritDoc
      */
-    protected function settingsHtml()
+    protected function settingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('shortener/settings', [
                 'settings' => $this->getSettings(),
@@ -171,7 +191,7 @@ class Shortener extends Plugin
     /**
      * @inheritDoc
      */
-    public function getCpNavItem()
+    public function getCpNavItem(): ?array
     {
         $request = Craft::$app->getRequest();
         $navItem = parent::getCpNavItem();

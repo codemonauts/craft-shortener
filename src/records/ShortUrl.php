@@ -4,7 +4,6 @@ namespace codemonauts\shortener\records;
 
 use craft\db\ActiveRecord;
 use craft\records\Element;
-use craft\records\Entry;
 use yii\db\ActiveQueryInterface;
 
 /**
@@ -28,7 +27,7 @@ class ShortUrl extends ActiveRecord
      */
     public static function tableName(): string
     {
-        return '{{%shortener_shortUrls}}';
+        return '{{%shortener_shortcodes}}';
     }
 
     /**

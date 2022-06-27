@@ -4,9 +4,10 @@ namespace codemonauts\shortener\elements\db;
 
 use codemonauts\shortener\elements\ShortUrl;
 use codemonauts\shortener\elements\Template;
+use craft\base\ElementInterface;
 use craft\elements\db\ElementQuery;
-use craft\elements\Entry;
-use craft\helpers\Db;
+use craft\helpers\ArrayHelper;
+use yii\base\InvalidConfigException;
 use yii\db\Connection;
 
 /**
@@ -18,56 +19,106 @@ use yii\db\Connection;
  */
 class ShortUrlQuery extends ElementQuery
 {
-    public $code;
-    public $templateId;
-    public $elementId;
-    public $redirectCode;
-    public $description;
+    /**
+     * @var mixed The short codes the result must be in.
+     */
+    public mixed $code = null;
 
     /**
-     * @param string $value The property value
-     *
-     * @return static self reference
+     * @var mixed The template element ID(s) the results must belong to.
      */
-    public function code($value)
+    public mixed $templateId = null;
+
+    /**
+     * @var mixed The element ID(s) the results must belong to.
+     */
+    public mixed $elementId = null;
+
+    /**
+     * @var mixed The redirect codes the results must be in.
+     */
+    public mixed $redirectCode = null;
+
+    /**
+     * Narrows the query results based on the short code the short URL belongs to.
+     *
+     * @param array|string|null $value The property value
+     *
+     * @return self self reference
+     */
+    public function code(array|string|null $value): self
     {
-        $this->code = (string)$value;
+        $this->code = $value;
 
         return $this;
     }
 
     /**
-     * @param int $value The property value
+     * Sets the [[templateId()]] parameter based on a given template element.
      *
-     * @return static self reference
+     * @param Template $template
+     *
+     * @return self self reference
      */
-    public function templateId($value)
+    public function template(Template $template): self
     {
-        $this->templateId = (int)$value;
+        $this->templateId = [$template->id];
 
         return $this;
     }
 
     /**
-     * @param int $value The property value
+     * Narrows the query results based on the template’ elements, per their IDs.
      *
-     * @return static self reference
+     * @param array|int|null $value The property value
+     *
+     * @return self self reference
      */
-    public function elementId($value)
+    public function templateId(array|int|null $value): self
     {
-        $this->elementId = (int)$value;
+        $this->templateId = $value;
 
         return $this;
     }
 
     /**
-     * @param int $value The property value
+     * Sets the [[elementId()]] parameter based on a given element.
      *
-     * @return static self reference
+     * @param ElementInterface $element
+     *
+     * @return self self reference
      */
-    public function redirectCode($value)
+    public function element(ElementInterface $element): self
     {
-        $this->redirectCode = (int)$value;
+        $this->elementId = [$element->id];
+
+        return $this;
+    }
+
+    /**
+     * Narrows the query results based on the elements, per their IDs.
+     *
+     * @param array|int|null $value The property value
+     *
+     * @return self self reference
+     */
+    public function elementId(array|int|null $value): self
+    {
+        $this->elementId = $value;
+
+        return $this;
+    }
+
+    /**
+     * Narrows the query results based on the redirect code the short URL belongs to.
+     *
+     * @param array|int|null $value The property value
+     *
+     * @return self self reference
+     */
+    public function redirectCode(array|int|null $value): self
+    {
+        $this->redirectCode = $value;
 
         return $this;
     }
@@ -77,40 +128,72 @@ class ShortUrlQuery extends ElementQuery
      */
     protected function beforePrepare(): bool
     {
-        // join in the products table
-        $this->joinElementTable('shortener_shortUrls');
+        $this->normalizeTemplateId();
+        $this->normalizeElementId();
 
-        // select the price column
+        $this->joinElementTable('shortener_shortcodes');
+
         $this->query->select([
-            'shortener_shortUrls.code',
-            'shortener_shortUrls.destination',
-            'shortener_shortUrls.redirectCode',
-            'shortener_shortUrls.description',
-            'shortener_shortUrls.templateId',
-            'shortener_shortUrls.elementId',
+            'shortener_shortcodes.code',
+            'shortener_shortcodes.destination',
+            'shortener_shortcodes.redirectCode',
+            'shortener_shortcodes.description',
+            'shortener_shortcodes.templateId',
+            'shortener_shortcodes.elementId',
         ]);
 
         if ($this->code) {
-            $this->subQuery->andWhere(Db::parseParam('shortener_shortUrls.code', $this->code));
+            $this->subQuery->andWhere(['shortener_shortcodes.code' => $this->code]);
         }
 
         if ($this->redirectCode) {
-            $this->subQuery->andWhere(Db::parseParam('shortener_shortUrls.redirectCode', $this->redirectCode));
+            $this->subQuery->andWhere(['shortener_shortcodes.redirectCode' => $this->redirectCode]);
         }
 
         if ($this->templateId) {
-            $this->subQuery->andWhere(Db::parseParam('shortener_shortUrls.templateId', $this->templateId));
+            $this->subQuery->andWhere(['shortener_shortcodes.templateId' => $this->templateId]);
         }
 
         if ($this->elementId) {
-            $this->subQuery->andWhere(Db::parseParam('shortener_shortUrls.elementId', $this->elementId));
+            $this->subQuery->andWhere(['shortener_shortcodes.elementId' => $this->elementId]);
         }
 
         return parent::beforePrepare();
     }
 
-    public function createFromTemplate(Entry $entry, Template $template)
+    /**
+     * Normalizes the templateId param to an array of IDs or null
+     */
+    private function normalizeTemplateId(): void
     {
+        if ($this->templateId === ':empty:' || $this->templateId === null) {
+            return;
+        }
 
+        if (is_numeric($this->templateId)) {
+            $this->templateId = [$this->templateId];
+        }
+
+        if (!is_array($this->templateId) || !ArrayHelper::isNumeric($this->templateId)) {
+            throw new InvalidConfigException();
+        }
+    }
+
+    /**
+     * Normalizes the elementId param to an array of IDs or null
+     */
+    private function normalizeElementId(): void
+    {
+        if ($this->elementId === ':empty:' || $this->elementId === null) {
+            return;
+        }
+
+        if (is_numeric($this->elementId)) {
+            $this->elementId = [$this->elementId];
+        }
+
+        if (!is_array($this->elementId) || !ArrayHelper::isNumeric($this->elementId)) {
+            throw new InvalidConfigException();
+        }
     }
 }

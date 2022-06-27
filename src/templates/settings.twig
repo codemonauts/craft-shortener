@@ -2,12 +2,28 @@
 
 {{ forms.autosuggestField({
     label: "Domain",
-    instructions: "The domain to use for shortening URLs.",
+    instructions: "The domain to use for shortening URLs. You can add a path as well."|t("shortener"),
     id: 'domain',
     name: 'domain',
     suggestEnvVars: true,
     value: settings.domain,
     errors: settings.getErrors('domain'),
     required: true,
-    placeholder: "example.com"
+    placeholder: "example.com/example-path"
 }) }}
+
+{{ forms.lightswitchField({
+    label: "Catch-all"|t("shortener"),
+    id: 'catchall',
+    name: 'catchall',
+    instructions: "When enabled, all paths that are not recognized as code are returned as 404."|t("shortener"),
+    on: settings.catchall,
+}) }}
+
+<div class="readable">
+    <blockquote class="note warning">
+        <p>{{ "If you use a domain that is also part of your site URL, we highly recommend adding a path to the domain that is not otherwise used (e.g. example.com/sub-path) and disabling the catch-all feature. Otherwise, parts of your page will not be served anymore."|t('shortener') }}</p>
+        <p>{{ "If you use a separate domain, you can omit the path and should activate the catch-all function in any case to prevent duplicate content."|t('shortener') }}</p>
+        <p><a href="https://plugins.codemonauts.com/plugins/shortener/domain.html">{{ "Check the documentation"|t('shortener') }}</a></p>
+    </blockquote>
+</div>

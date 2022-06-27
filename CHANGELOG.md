@@ -1,5 +1,15 @@
 # Release Notes for URL Shortener
 
+## 2.0.0
+
+### Added
+
+- Craft CMS 4 compatibility
+
+### Changed
+
+- Requires Craft CMS >= 4.0
+
 ## 1.0.0-alpha-5
 
 ### Added

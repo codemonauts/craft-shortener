@@ -8,6 +8,8 @@ use codemonauts\shortener\Shortener;
 use Craft;
 use craft\base\Element;
 use craft\elements\db\ElementQueryInterface;
+use craft\elements\User;
+use craft\events\AuthorizationCheckEvent;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
@@ -18,12 +20,12 @@ class ShortUrl extends Element
 {
     const SCENARIO_CREATE = 'create';
 
-    public $code;
-    public $destination;
-    public $redirectCode;
-    public $description;
-    public $templateId;
-    public $elementId;
+    public ?string $code = null;
+    public ?string $destination = null;
+    public ?int $redirectCode = null;
+    public $description = null;
+    public ?int $templateId = null;
+    public ?int $elementId = null;
 
     /**
      * @inheritDoc
@@ -68,15 +70,17 @@ class ShortUrl extends Element
     /**
      * @inheritdoc
      */
-    public function getIsEditable(): bool
+    public function canView(User $user): bool
     {
-        return !$this->templateId;
+        $event = new AuthorizationCheckEvent($user);
+        $this->trigger(self::EVENT_AUTHORIZE_VIEW, $event);
+        return (!$this->templateId && $event->authorized);
     }
 
     /**
      * @inheritDoc
      */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): string
     {
         return 'shortener/short-url/' . $this->id;
     }
@@ -84,9 +88,9 @@ class ShortUrl extends Element
     /**
      * @inheritDoc
      */
-    public function getUrl()
+    public function getUrl(): ?string
     {
-        $settings = Shortener::getInstance()->getSettings();
+        $settings = Shortener::$settings;
         if ($settings->domain === null || !$this->id) {
             return null;
         }
@@ -268,7 +272,7 @@ class ShortUrl extends Element
      * @return Template|null
      * @throws InvalidConfigException
      */
-    public function getTemplate()
+    public function getTemplate(): ?Template
     {
         if ($this->templateId === null) {
             return null;
@@ -287,7 +291,7 @@ class ShortUrl extends Element
      * @return Element|null
      * @throws InvalidConfigException
      */
-    public function getElement()
+    public function getElement(): ?Element
     {
         if ($this->elementId === null) {
             return null;
