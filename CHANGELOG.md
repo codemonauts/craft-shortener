@@ -1,5 +1,11 @@
 # Release Notes for URL Shortener
 
+## 2.0.1
+
+### Fixed
+
+- Fixed migration table name.
+
 ## 2.0.0
 
 ### Added

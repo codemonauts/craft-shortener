@@ -14,7 +14,7 @@ class m210628_091722_add_description extends Migration
      */
     public function safeUp()
     {
-        $this->addColumn('{{%shortener_shortcodes}}', 'description', $this->string(1024));
+        $this->addColumn('{{%shortener_shortUrls}}', 'description', $this->string(1024));
     }
 
     /**
@@ -22,6 +22,6 @@ class m210628_091722_add_description extends Migration
      */
     public function safeDown()
     {
-        $this->dropColumn('{{%shortener_shortcodes}}', 'description');
+        $this->dropColumn('{{%shortener_shortUrls}}', 'description');
     }
 }
