@@ -18,7 +18,6 @@ class m220615_232017_rename_table extends Migration
         $this->createTable('{{%shortener_shortcodes}}', [
             'id' => $this->primaryKey(),
             'code' => $this->string()->notNull(),
-            'destination' => $this->string(1024)->notNull(),
             'redirectCode' => $this->integer()->unsigned()->notNull(),
             'description' => $this->string(1024),
             'templateId' => $this->integer(),
@@ -26,6 +25,7 @@ class m220615_232017_rename_table extends Migration
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid(),
+            'destination' => $this->string(1024)->notNull(),
         ]);
 
         $this->addForeignKey(null, '{{%shortener_shortcodes}}', ['id'], Table::ELEMENTS, ['id'], 'CASCADE', null);
