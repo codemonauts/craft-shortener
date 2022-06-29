@@ -1,5 +1,11 @@
 # Release Notes for URL Shortener
 
+## 2.0.3
+
+### Fixed
+
+- Fixed column order, again.
+
 ## 2.0.2
 
 ### Fixed
