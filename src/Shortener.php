@@ -70,11 +70,17 @@ class Shortener extends Plugin
 
         self::$settings = self::$plugin->getSettings();
 
-        // Check for root path in domain
+        // Prepare domain for routing rules
         $domain = rtrim(App::parseEnv(self::$settings->domain), '/');
         $request = Craft::$app->getRequest();
-        if ($request->isSiteRequest && stripos($request->hostInfo, $domain) !== false && $request->getUrl() === '/') {
-            throw new NotFoundHttpException();
+        if ($request->isSiteRequest && stripos($request->hostInfo, $domain) !== false) {
+            // Check for root path in domain
+            if ($request->getUrl() === '/') {
+                throw new NotFoundHttpException();
+            }
+            $domain = $request->hostInfo;
+        } else {
+            $domain = '//' . $domain;
         }
 
         // Register components

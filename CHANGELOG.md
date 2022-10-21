@@ -1,6 +1,12 @@
 # Release Notes for URL Shortener
 
-## 2.0.3
+## 2.0.4 - 2022-10-21
+
+### Fixed
+
+- Routing with schema.
+
+## 2.0.3 - 2022-06-29
 
 ### Fixed
 
