@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Routing with schema.
+- Routing with schemes.
 
 ## 2.0.3 - 2022-06-29
 
@@ -12,19 +12,19 @@
 
 - Fixed column order, again.
 
-## 2.0.2
+## 2.0.2 - 2022-06-29
 
 ### Fixed
 
 - Fixed column order.
 
-## 2.0.1
+## 2.0.1 - 2022-06-29
 
 ### Fixed
 
 - Fixed migration table name.
 
-## 2.0.0
+## 2.0.0 - 2022-06-27
 
 ### Added
 
@@ -34,7 +34,7 @@
 
 - Requires Craft CMS >= 4.0
 
-## 1.0.0-alpha-5
+## 1.0.0-alpha-5 - 2021-06-23
 
 ### Added
 
@@ -46,7 +46,7 @@
 - Fix notice when saving templates.
 - Show template actions only, when templates are available.
 
-## 1.0.0-alpha.4
+## 1.0.0-alpha.4 - 2021-06-22
 
 ### Added
 
@@ -55,7 +55,7 @@
 - The domain in the settings has to be a full URL.
 - Add URL validation to domain.
 
-## 1.0.0-alpha.3
+## 1.0.0-alpha.3 - 2021-06-21
 
 ### Fixed
 
@@ -63,13 +63,13 @@
 - Fix notice when saving new ShortURL.
 - Trim domain and path for trailing slashes.
 
-## 1.0.0-alpha.2
+## 1.0.0-alpha.2 - 2020-08-18
 
 ### Added
 
 - Add redirect for non-codes and root path.
 
-## 1.0.0-alpha.1
+## 1.0.0-alpha.1 - 2020-08-17
 
 ### Added
 
